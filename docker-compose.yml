@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  postgres-virtual:
+    container_name: postgres-virtual
+    image: postgres
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_PASSWORD=root
+    networks:
+      - java-network
+
+  java-app-db:
+    container_name: java-app-db
+    image: java-app:1.2
+    ports:
+      - "8080:8080"
+    environment:
+      - NAME=Liam
+      - MESSAGE=Ayok belajar!
+      - DATASOURCE_URL=jdbc:postgresql://postgres-virtual:5432/postgres
+      - DATASOURCE_USERNAME=postgres
+      - DATASOURCE_PASSWORD=root
+    networks:
+      - java-network
+    depends_on:
+      - postgres-virtual
+
+
+networks:
+  java-network:
+    name: java-network
